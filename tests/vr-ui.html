@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VR world-space UI — development fixture</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+        background: #e4e5d7;
+      }
+      canvas {
+        display: block;
+      }
+      nav {
+        position: fixed;
+        left: 12px;
+        top: 12px;
+        background: #f4f2e9;
+        padding: 12px;
+        border-radius: 8px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+      }
+      button,
+      select {
+        font: inherit;
+        padding: 8px;
+      }
+      p {
+        position: fixed;
+        bottom: 0;
+        background: #f4f2e9;
+        padding: 12px;
+        margin: 12px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <label
+        >Panel
+        <select id="screen">
+          <option value="intro">Introduction</option>
+          <option value="tutorial">Tutorial</option>
+          <option value="familiarization">Cup task</option>
+          <option value="interruption">Question</option>
+          <option value="place-plate">Plate task</option>
+          <option value="completed">Completed</option>
+          <option value="reflection">Reflection</option>
+        </select></label
+      ><button id="reset">Reset fixture</button
+      ><output id="action">Click a world-space button</output>
+    </nav>
+    <p>
+      Development fixture only. These are the real VR panels and raycaster; a
+      mouse substitutes for a controller. This does not emulate a headset.
+    </p>
+    <script type="module" src="/tests/vr-preview.ts"></script>
+  </body>
+</html>

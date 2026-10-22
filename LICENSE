@@ -1,0 +1,75 @@
+A Different Perspective - Noncommercial License 1.0
+
+Copyright (c) 2026 zyogy. All rights reserved except as expressly granted below.
+Licensor: the project owner identified by https://github.com/zyogy
+Project: https://github.com/zyogy/dementia-vr
+
+1. Scope and ownership
+
+This license covers the original source code, documentation, artwork, and other
+project materials in this repository (the "Software"), excluding third-party
+materials. Ownership remains with the respective copyright holders. Making the
+repository or demonstration publicly accessible does not transfer ownership or
+place the Software in the public domain.
+
+2. Noncommercial permission
+
+Subject to these terms, you may view, download, run, study, copy, and modify the
+Software solely for noncommercial purposes. You may distribute original or
+modified copies solely for noncommercial purposes, provided that you include
+this license and all copyright and third-party notices, clearly identify your
+changes, and do not suggest endorsement by the Licensor. Recipients receive
+permission for the original Software directly under this license. You must not
+remove these restrictions or grant broader rights to the original Software.
+
+3. Commercial use and modification prohibited
+
+Without separate prior written permission from the Licensor, you must not use,
+copy, modify, adapt, distribute, sell, license, host, or otherwise exploit the
+Software or works derived from it for commercial purposes.
+
+"Commercial purposes" means purposes primarily intended for or directed toward
+commercial advantage, business operations, or monetary compensation. This
+includes internal business use, paid training or consulting, incorporation into
+a commercial product or service, monetized hosting, and development or
+modification for an anticipated commercial application. Providing access free
+of charge does not by itself make a commercial activity noncommercial.
+
+An organization's nonprofit, educational, or charitable status does not exempt
+commercial activities from this restriction. Personal study, experimentation,
+and unpaid educational use without a commercial purpose are permitted under
+section 2. The Licensor retains the right to use the Software commercially and
+to grant separate licenses. For other permissions, contact the repository owner.
+
+4. Third-party materials and other rights
+
+Third-party dependencies and materials remain under their own licenses. This
+license does not restrict rights granted by those separate licenses; see
+THIRD_PARTY_NOTICES.txt and the relevant dependency packages. No trademark rights
+or right to imply endorsement are granted by this license.
+
+Nothing in this license limits rights that cannot lawfully be restricted,
+including applicable copyright exceptions, or the rights already granted to
+GitHub and its users under GitHub's terms for hosting, viewing, and forking a
+public repository. A GitHub fork does not grant additional commercial rights
+under this license.
+
+5. Termination
+
+The permissions granted by this license end automatically if you violate its
+terms. Upon termination, you must stop activities requiring these permissions.
+Reinstatement requires the Licensor's written consent. Rights under applicable
+law and independent third-party licenses are unaffected.
+
+6. Disclaimer
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+THE COPYRIGHT HOLDERS ARE NOT LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY
+ARISING FROM THE SOFTWARE OR ITS USE, WHETHER IN CONTRACT, TORT, OR OTHERWISE.
+
+This is an educational demonstration, not a medical device, diagnostic tool,
+clinical recommendation, or exact representation of living with dementia.
+
+This is a custom source-available license, not an open-source license.
