@@ -8,6 +8,14 @@ An interactive, client-side dementia-awareness training MVP for desktop browsers
 
 **Educational scope:** this illustrates selected attention and task-continuity challenges. It does not reproduce dementia, diagnose anyone, or imply that all people living with dementia share the same experiences. Use it to start a facilitated conversation. There is no score, deadline, flashing effect, forced camera movement, or simulated visual impairment.
 
+## Languages
+
+**Finnish is the default** for new visitors. The Finnish title is **Toinen näkökulma**. Select **English** in the desktop header or on any VR panel to switch to English; select **Suomi** to switch back. The controls work during the scenario without resetting the current task, selected object, interruption timer, or sound settings. An explicit language choice is saved in this browser's local storage; if storage is unavailable, it lasts for the current page session.
+
+Both languages cover the welcome screen, tutorial, tasks, answer feedback, reflection, settings, sound captions, object labels, accessibility labels, browser title, and user-facing errors. The world-space language button uses the same controller raycasting as other VR controls. Code, action IDs, developer documentation, and the original legal license remain in English.
+
+Translations live in `src/i18n/messages.ts`, with typed English source messages as keys and Finnish values. `Localization.ts` handles the preference and document metadata; `ui/content.ts` provides translated scenario content to both interfaces. No translation service or extra runtime dependency is used.
+
 ## Run locally
 
 Use **Node.js 22.12+ or Node.js 24 LTS** and npm. From this project directory:
@@ -56,7 +64,7 @@ Start → introduction → controls tutorial → cup → interruption → plate 
 - Look around naturally. Stay in one place; artificial locomotion is not needed.
 - Aim either controller’s visible ray at an object or panel button; press and release the trigger to select it.
 - Select an object, then its highlighted table destination. Objects snap into place; no grabbing or physics are required.
-- Introduction, tutorial, instructions, interruption choices, continuation, reflection, **Sound**, **Restart**, and **Stop / exit VR** are canvas-textured world-space panels. Immersive mode does not depend on DOM overlays.
+- Introduction, tutorial, instructions, interruption choices, continuation, reflection, **Sound**, **Restart**, **Stop / exit VR**, and the **English / Suomi** switch are canvas-textured world-space panels. Immersive mode does not depend on DOM overlays. Control labels follow the selected language.
 - The `local` reference space is placed at a nominal eye height of 1.62 m, so initial seating/standing height does not require a calibration step. Start facing forward. Physical head movement remains tracked; don't change from sitting to standing mid-session. The headset's system exit also cancels the exercise and returns to welcome.
 
 ## Meta Quest and secure-context setup
@@ -130,6 +138,9 @@ package.json / package-lock.json
 tsconfig.json / vite.config.ts
 src/
   main.ts
+  i18n/
+    messages.ts              # Typed English messages and Finnish translations
+    Localization.ts          # Finnish default, saved preference, document language
   core/
     Experience.ts            # Lifecycle and integration
     DesktopControls.ts       # Fixed-position mouse and keyboard look
@@ -160,6 +171,7 @@ tests/
   simulation.test.ts
   xr.test.ts                 # Mocked runtime; no hardware claims
   vr-ui.test.ts              # Panel controls and GPU texture lifecycle regression
+  localization.test.ts       # Preferences, translated variants, stable action IDs
   vr-ui.html / vr-preview.ts # Development-only real world-space panel fixture
 ```
 
@@ -169,7 +181,7 @@ tests/
 
 Automated tests cover the full scenario and supportive answer branches, invalid and duplicate placements, selection cancellation, configuration changes, resets, late callbacks, shared nested-mesh raycasting, multi-pointer hover, hidden/disabled controls, interruption cleanup, both controller trigger paths, support checks, and XR session lifecycle failure handling.
 
-Implementation validation: **21 tests pass**, strict TypeScript and the production build pass, and the dependency audit reports no vulnerabilities. The complete desktop flow was exercised through 3D scene clicks; keyboard assist buttons, quiet-mode settings, restart, stop, responsive layout, and world-space panel controls were also checked in a browser. A texture-resizing defect found during world-space panel inspection was fixed and covered by a regression test. No browser console errors were observed during those checks.
+Implementation validation: **26 tests pass**, strict TypeScript and the production build pass. The complete desktop flow was exercised through 3D scene clicks; keyboard assist buttons, quiet-mode settings, restart, stop, responsive layout, and world-space panel controls were also checked in a browser. Finnish localization was checked through the complete scenario, language switching with a selected cup and during an interruption, preference persistence, mobile layouts, and the actual VR panels. Tests cover both languages' screen variants and stable action IDs, storage failures, and the VR language button. A texture-resizing defect found during world-space panel inspection was fixed and covered by a regression test. No browser console errors were observed during those checks.
 
 While running Vite, open `/tests/vr-ui.html` to inspect the **actual** world-space panels with a mouse ray. Its selector exposes every key screen and the buttons use the real state machine. This fixture is excluded from the production build and is not a WebXR/headset emulator.
 
@@ -178,6 +190,7 @@ Before a real demonstration, test on the intended Quest hardware:
 - [ ] Start from a secure context; accept the session normally; verify stereo rendering and tracking.
 - [ ] Try seated and standing starts separately; check initial eye height, forward direction, panel legibility, and comfortable reach by ray.
 - [ ] Read introduction/tutorial in VR and use either controller for every panel button.
+- [ ] Check Finnish text readability; switch to English and back with either controller during a task. Confirm the selected object and progress remain unchanged.
 - [ ] Select/cancel/select cup; place it; verify a single interruption and correctly captioned gentle sound.
 - [ ] Try each answer, resume, mute/unmute, place the plate, and read all three reflection prompts.
 - [ ] Restart during the ring and during the plate task; verify objects, highlights, sound, and timers reset.
@@ -191,6 +204,6 @@ Before a real demonstration, test on the intended Quest hardware:
 
 Static meshes are merged by material; geometry and materials are reused; there is one shadow-casting light and a 1024px shadow map updated only when state changes. Pixel ratio is capped, XR rendering uses `setAnimationLoop`, raycaster scratch objects are reused, there is no post-processing or physics, and lifecycle teardown disposes resources. The kitchen is stylized procedural geometry rather than photorealistic or production GLTF artwork.
 
-This MVP has one scenario, English text, no saved responses or analytics, no hand tracking, no locomotion, and no real recorded conversation. The development fixture checks panel functionality without reproducing headset optics or controller tracking. The three-dimensional kitchen is visually led; keyboard assist buttons and readable HTML provide an alternative interaction path, but this is not a certified screen-reader-only training curriculum. Browser/device compatibility and educational effectiveness need further evaluation with care professionals and people with lived experience.
+This MVP has one scenario, Finnish and English text, no saved responses or analytics, no hand tracking, no locomotion, and no real recorded conversation. The development fixture checks panel functionality without reproducing headset optics or controller tracking. The three-dimensional kitchen is visually led; keyboard assist buttons and readable HTML provide an alternative interaction path, but this is not a certified screen-reader-only training curriculum. Browser/device compatibility, Finnish terminology, and educational effectiveness should be evaluated with care professionals and people with lived experience.
 
-Future work can replace environment builders with GLTF assets while retaining interaction IDs, introduce a scenario catalog and additional environments, extract copy into localized dictionaries (including Finnish), add instructor controls, hand-tracking adapters, head-tracked audio, consent-based analytics, and guided sessions. None of those features are required to run this vertical slice.
+Future work can replace environment builders with GLTF assets while retaining interaction IDs, introduce a scenario catalog and additional environments, extend the translation catalog to further languages, add instructor controls, hand-tracking adapters, head-tracked audio, consent-based analytics, and guided sessions. None of those features are required to run this vertical slice.

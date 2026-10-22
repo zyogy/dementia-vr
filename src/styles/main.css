@@ -134,6 +134,17 @@ h1:focus {
   align-items: center;
   gap: 22px;
 }
+.language-button {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 11px 14px;
+  background: var(--paper);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.language-button:hover {
+  background: #e3e6d9;
+}
 .training-label {
   font-size: 9px;
   letter-spacing: 1.8px;
@@ -946,7 +957,11 @@ body[data-screen="task"] .scene-tools {
     font-size: 35px;
   }
   .top-actions {
-    gap: 10px;
+    gap: 6px;
+  }
+  .language-button {
+    padding: 10px;
+    font-size: 11px;
   }
   .stop-button {
     font-size: 10px;

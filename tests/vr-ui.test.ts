@@ -74,12 +74,36 @@ describe("World-space panel lifecycle", () => {
     expect(manager.activate("vr:restart")).toBe(true);
     expect(manager.activate("vr:stop")).toBe(true);
     const words = ctx.fillText.mock.calls.map((call) => call[0]).join(" ");
-    expect(words).toContain("How did the interruption");
-    expect(words).toContain("How did background distractions");
-    expect(words).toContain("How could a care worker");
+    expect(words).toContain("Miten keskeytys");
+    expect(words).toContain("Miten taustan häiriötekijät");
+    expect(words).toContain("Miten hoitaja");
     panel.root.visible = false;
     expect(manager.activate("vr:stop")).toBe(false);
     panel.dispose();
     expect(manager.activate("vr:restart")).toBe(false);
+  });
+  it("switches world-space copy and keeps raycast actions and selected objects intact", () => {
+    const { panel, manager, scenario, onAction, ctx } = fixture();
+    panel.root.visible = true;
+    scenario.action("start");
+    scenario.action("continue");
+    scenario.action("begin");
+    scenario.select("cup");
+    const snapshot = scenario.snapshot;
+    panel.update(snapshot, defaultSimulationConfig, "fi");
+    expect(ctx.fillText.mock.calls.map((call) => call[0]).join(" ")).toContain(
+      "Paikka kupille.",
+    );
+    expect(manager.activate("vr:toggle-language")).toBe(true);
+    expect(onAction).toHaveBeenLastCalledWith("toggle-language");
+    ctx.fillText.mockClear();
+    panel.update(snapshot, defaultSimulationConfig, "en");
+    const words = ctx.fillText.mock.calls.map((call) => call[0]).join(" ");
+    expect(words).toContain("A place for your cup.");
+    expect(words).toContain("Suomi");
+    expect(words).not.toContain("Paikka kupille.");
+    expect(scenario.snapshot).toEqual(snapshot);
+    expect(manager.activate("vr:stop")).toBe(true);
+    panel.dispose();
   });
 });

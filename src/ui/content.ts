@@ -1,4 +1,5 @@
 import type { ScenarioSnapshot } from "../scenarios/ScenarioManager";
+import { translate, type Locale, type Message } from "../i18n/messages";
 export type Mode = "desktop" | "vr";
 export interface ButtonSpec {
   id: string;
@@ -18,11 +19,21 @@ export const reflectionQuestions = [
   "How did the interruption affect your ability to complete the task?",
   "How did background distractions influence your concentration?",
   "How could a care worker support someone experiencing similar challenges?",
-];
-export function contentFor(
+] as const;
+type SourceContent = Omit<
+  ScreenContent,
+  "eyebrow" | "title" | "body" | "detail" | "buttons"
+> & {
+  eyebrow: Message;
+  title: Message;
+  body: Message;
+  detail?: Message;
+  buttons: (Omit<ButtonSpec, "label"> & { label: Message })[];
+};
+function sourceContent(
   s: Readonly<ScenarioSnapshot>,
   mode: Mode,
-): ScreenContent {
+): SourceContent {
   switch (s.state) {
     case "welcome":
       return {
@@ -143,4 +154,22 @@ export function contentFor(
         ],
       };
   }
+}
+
+export function contentFor(
+  s: Readonly<ScenarioSnapshot>,
+  mode: Mode,
+  locale: Locale = "fi",
+): ScreenContent {
+  const content = sourceContent(s, mode);
+  return {
+    eyebrow: translate(content.eyebrow, locale),
+    title: translate(content.title, locale),
+    body: translate(content.body, locale),
+    detail: content.detail ? translate(content.detail, locale) : undefined,
+    buttons: content.buttons.map((button) => ({
+      ...button,
+      label: translate(button.label, locale),
+    })),
+  };
 }

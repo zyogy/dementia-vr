@@ -38,6 +38,10 @@ export class InteractionManager {
       for (const [source, hover] of this.hovered)
         if (hover === entry) this.hover(source, null);
   }
+  setLabel(id: string, label: string): void {
+    const entry = this.entries.get(id);
+    if (entry) entry.label = label;
+  }
   private visible(object: THREE.Object3D): boolean {
     let current: THREE.Object3D | null = object;
     while (current) {

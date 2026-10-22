@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { ControllerManager } from "./ControllerManager";
 import type { InteractionManager } from "../interaction/InteractionManager";
+import type { Message } from "../i18n/messages";
 
 export class XRManager {
   readonly rig = new THREE.Group();
@@ -27,7 +28,7 @@ export class XRManager {
     this.controllers = new ControllerManager(renderer, this.rig, interactions);
     renderer.xr.addEventListener("sessionend", this.endListener);
   }
-  async support(): Promise<{ supported: boolean; reason: string }> {
+  async support(): Promise<{ supported: boolean; reason: Message }> {
     if (!window.isSecureContext)
       return {
         supported: false,

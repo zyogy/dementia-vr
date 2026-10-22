@@ -3,6 +3,7 @@ import type { InteractionManager } from "../interaction/InteractionManager";
 import type { ScenarioSnapshot } from "../scenarios/ScenarioManager";
 import type { SimulationConfig } from "../simulation/SimulationConfig";
 import { contentFor, reflectionQuestions, type ButtonSpec } from "./content";
+import { translate, type Locale, type Message } from "../i18n/messages";
 
 interface DrawButton extends ButtonSpec {
   x: number;
@@ -23,6 +24,7 @@ export class VRUI {
   private hovered = new Set<string>();
   private snapshot?: Readonly<ScenarioSnapshot>;
   private config?: SimulationConfig;
+  private locale: Locale = "fi";
   constructor(
     scene: THREE.Scene,
     private interactions: InteractionManager,
@@ -51,7 +53,12 @@ export class VRUI {
     texture.generateMipmaps = false;
     return texture;
   }
-  update(snapshot: Readonly<ScenarioSnapshot>, config: SimulationConfig): void {
+  update(
+    snapshot: Readonly<ScenarioSnapshot>,
+    config: SimulationConfig,
+    locale: Locale = "fi",
+  ): void {
+    this.locale = locale;
     this.unregister.forEach((remove) => remove());
     this.unregister = [];
     this.buttonMeshes.forEach((mesh) => {
@@ -148,7 +155,8 @@ export class VRUI {
     const ctx = this.ctx,
       s = this.snapshot,
       h = this.canvas.height;
-    const content = contentFor(s, "vr");
+    const t = (message: Message) => translate(message, this.locale);
+    const content = contentFor(s, "vr", this.locale);
     ctx.fillStyle = "#f4f2e9";
     ctx.fillRect(0, 0, 1024, h);
     ctx.fillStyle = "#516750";
@@ -165,7 +173,7 @@ export class VRUI {
     if (s.state === "reflection") {
       ctx.font = "31px sans-serif";
       reflectionQuestions.forEach((question, i) => {
-        y = this.text(`${i + 1}. ${question}`, 52, y + 27, 920, 43);
+        y = this.text(`${i + 1}. ${t(question)}`, 52, y + 27, 920, 43);
       });
     }
     const compact = h === 580;
@@ -173,7 +181,7 @@ export class VRUI {
       ctx.fillStyle = "#566153";
       ctx.font = "27px sans-serif";
       this.text(
-        "Start with the sage-green cup on the counter.",
+        t("Start with the sage-green cup on the counter."),
         52,
         y + 20,
         920,
@@ -188,7 +196,9 @@ export class VRUI {
     if (s.state === "intro") {
       ctx.font = "27px sans-serif";
       y = this.text(
-        "This illustrates selected challenges, not dementia itself. Every person’s experience is different.",
+        t(
+          "This illustrates selected challenges, not dementia itself. Every person’s experience is different.",
+        ),
         52,
         y + 20,
         920,
@@ -199,16 +209,28 @@ export class VRUI {
       ctx.font = "24px sans-serif";
       ctx.fillStyle = "#566153";
       this.text(
-        this.config.audioDistractions && this.config.audioIntensity > 0
-          ? "Sound: soft ticking, abstract murmurs, kitchen tones."
-          : "Background sounds are off.",
+        t(
+          this.config.audioDistractions && this.config.audioIntensity > 0
+            ? "Sound: soft ticking, abstract murmurs, kitchen tones."
+            : "Background sounds are off.",
+        ),
         52,
         y + 12,
         920,
         31,
       );
     }
-    this.drawButtons = [];
+    this.drawButtons = [
+      {
+        id: "toggle-language",
+        label: this.locale === "fi" ? "English" : "Suomi",
+        secondary: true,
+        x: 770,
+        y: 24,
+        w: 202,
+        h: 60,
+      },
+    ];
     const buttons = content.buttons;
     // Fixed bottom slots keep controls stable while task text changes.
     let buttonY = h - 126 - buttons.length * 85;
@@ -219,7 +241,7 @@ export class VRUI {
     this.drawButtons.push(
       {
         id: "toggle-sound",
-        label: `Sound ${this.config.audioDistractions ? "on" : "off"}`,
+        label: t(this.config.audioDistractions ? "Sound on" : "Sound off"),
         secondary: true,
         x: 52,
         y: h - 103,
@@ -228,7 +250,7 @@ export class VRUI {
       },
       {
         id: "restart",
-        label: "Restart",
+        label: t("Restart"),
         secondary: true,
         x: 367,
         y: h - 103,
@@ -237,7 +259,7 @@ export class VRUI {
       },
       {
         id: "stop",
-        label: "Stop / exit VR",
+        label: t("Stop / exit VR"),
         secondary: true,
         x: 682,
         y: h - 103,

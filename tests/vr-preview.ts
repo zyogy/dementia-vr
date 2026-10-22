@@ -11,6 +11,7 @@ import {
   type ScenarioState,
 } from "../src/scenarios/ScenarioManager";
 import { defaultSimulationConfig } from "../src/simulation/SimulationConfig";
+import type { Locale } from "../src/i18n/messages";
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#e4e5d7");
@@ -33,12 +34,16 @@ const interactions = new InteractionManager(),
   scenario = new ScenarioManager(defaultSimulationConfig);
 let config = { ...defaultSimulationConfig },
   current: Readonly<ScenarioSnapshot> = scenario.snapshot;
+let locale: Locale = "fi";
 const output = document.querySelector<HTMLOutputElement>("#action")!;
 const panel = new VRUI(scene, interactions, (action) => {
   output.textContent = `Selected: ${action}`;
-  if (action === "toggle-sound") {
+  if (action === "toggle-language") {
+    locale = locale === "fi" ? "en" : "fi";
+    panel.update(current, config, locale);
+  } else if (action === "toggle-sound") {
     config = { ...config, audioDistractions: !config.audioDistractions };
-    panel.update(current, config);
+    panel.update(current, config, locale);
   } else if (action.startsWith("answer:"))
     scenario.answerInterruption(action.slice(7));
   else scenario.action(action as ScenarioAction);
@@ -46,7 +51,7 @@ const panel = new VRUI(scene, interactions, (action) => {
 panel.root.visible = true;
 scenario.subscribe((snapshot) => {
   current = snapshot;
-  panel.update(snapshot, config);
+  panel.update(snapshot, config, locale);
   kitchen.update(snapshot, true);
 });
 scenario.action("start");

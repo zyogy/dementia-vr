@@ -22,6 +22,8 @@ import { VRUI } from "../ui/VRUI";
 import type { Mode } from "../ui/content";
 import { XRManager } from "../xr/XRManager";
 import { DesktopControls } from "./DesktopControls";
+import { Localization } from "../i18n/Localization";
+import type { Message } from "../i18n/messages";
 
 export class Experience {
   private scene = new THREE.Scene();
@@ -43,9 +45,12 @@ export class Experience {
   private abort = new AbortController();
   private unsubscribers: (() => void)[] = [];
   private xrAvailable = false;
-  private xrReason = "";
+  private xrReason: Message = "Checking headset availability…";
   private disposed = false;
-  constructor(private host: HTMLElement) {
+  constructor(
+    private host: HTMLElement,
+    private localization: Localization,
+  ) {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance",
@@ -60,7 +65,9 @@ export class Experience {
     this.renderer.shadowMap.needsUpdate = true;
     this.renderer.domElement.setAttribute(
       "aria-label",
-      "Kitchen view. Drag to look around; click a cup or plate to select it.",
+      this.localization.text(
+        "Kitchen view. Drag to look around; click a cup or plate to select it.",
+      ),
     );
     this.renderer.domElement.tabIndex = 0;
     host.append(this.renderer.domElement);
@@ -72,6 +79,7 @@ export class Experience {
       this.config,
       (action) => this.action(action),
       (config) => this.configure(config),
+      this.localization,
     );
     this.vr = new VRUI(this.scene, this.interactions, (action) =>
       this.action(action),
@@ -171,7 +179,9 @@ export class Experience {
     this.renderer.setSize(width, height);
   }
   private action(action: string): void {
-    if (action === "start-desktop") {
+    if (action === "toggle-language") {
+      this.changeLanguage();
+    } else if (action === "start-desktop") {
       this.mode = "desktop";
       void this.unlockAudio();
       this.controls.reset();
@@ -186,11 +196,12 @@ export class Experience {
       // Request the XR session before yielding the click's transient activation.
       const request = this.xr.enter();
       void this.unlockAudio();
-      void request.catch((error) =>
+      void request.catch((error) => {
+        console.error("VR session could not start", error);
         this.desktop.toast(
-          `VR could not start: ${error instanceof Error ? error.message : "Please try again."} Desktop remains available.`,
-        ),
-      );
+          "VR could not start. Check headset permissions and try again. Desktop remains available.",
+        );
+      });
     } else if (action === "stop") {
       this.simulation.reset();
       this.scenario.action("stop");
@@ -226,6 +237,30 @@ export class Experience {
         "Sound could not start. Captions and every task still work; you can try Sound again.",
       );
   }
+  private changeLanguage(): void {
+    const scroll = window.scrollY;
+    this.localization.setLocale(
+      this.localization.locale === "fi" ? "en" : "fi",
+    );
+    this.localization.applyDocument();
+    this.interactions.clearHover();
+    this.desktop.dispose();
+    this.desktop = new DesktopUI(
+      this.config,
+      (action) => this.action(action),
+      (config) => this.configure(config),
+      this.localization,
+    );
+    this.desktop.setXRSupport(this.xrAvailable, this.xrReason);
+    this.desktop.setImmersive(this.mode === "vr");
+    // Re-render the same snapshot. Do not dispatch scenario events or restart timers/audio.
+    this.update(this.scenario.snapshot);
+    window.scrollTo({ top: scroll, behavior: "instant" });
+    if (this.mode === "desktop")
+      document
+        .querySelector<HTMLElement>('[data-action="toggle-language"]')
+        ?.focus({ preventScroll: true });
+  }
   private sessionChanged(active: boolean): void {
     this.interactions.clearHover();
     this.mode = active ? "vr" : "desktop";
@@ -251,6 +286,16 @@ export class Experience {
     this.update(this.scenario.snapshot);
   }
   private update(snapshot: Readonly<ScenarioSnapshot>): void {
+    this.host.setAttribute(
+      "aria-label",
+      this.localization.text("Interactive 3D Nordic kitchen"),
+    );
+    this.renderer.domElement.setAttribute(
+      "aria-label",
+      this.localization.text(
+        "Kitchen view. Drag to look around; click a cup or plate to select it.",
+      ),
+    );
     const previous = this.previous;
     this.previous = snapshot;
     if (previous?.state !== snapshot.state) {
@@ -269,6 +314,16 @@ export class Experience {
     }
     this.kitchen.update(snapshot, this.config.showHints);
     for (const id of ["cup", "plate"] as const) {
+      this.interactions.setLabel(
+        `select:${id}`,
+        this.localization.text(id === "cup" ? "Select cup" : "Select plate"),
+      );
+      this.interactions.setLabel(
+        `place:${id}`,
+        this.localization.text(
+          id === "cup" ? "Place cup here" : "Place plate here",
+        ),
+      );
       this.interactions.setEnabled(`select:${id}`, this.scenario.canSelect(id));
       this.interactions.setEnabled(`place:${id}`, this.scenario.canPlace(id));
       setObjectEmphasis(
@@ -278,7 +333,7 @@ export class Experience {
       );
     }
     this.desktop.render(snapshot, this.mode);
-    this.vr.update(snapshot, this.config);
+    this.vr.update(snapshot, this.config, this.localization.locale);
     this.controls.enabled =
       this.mode === "desktop" &&
       ["familiarization", "place-cup", "place-plate", "completed"].includes(
