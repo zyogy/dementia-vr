@@ -1,4 +1,6 @@
 :root {
+  /* Keep browser auto-darkening from recoloring text over the WebGL scene. */
+  color-scheme: only light;
   font-family: Arial, Helvetica, sans-serif;
   color: #304438;
   background: #f4f2e9;
@@ -244,7 +246,7 @@ body[data-screen="welcome"] .topbar {
 }
 .welcome-panel h1 em {
   font-weight: 400;
-  color: #718269;
+  color: #52674c;
 }
 .subtitle {
   font-size: 16px;
@@ -361,12 +363,14 @@ body[data-screen="welcome"] .topbar {
   display: flex;
   gap: 20px;
   align-items: flex-start;
-  border-top: 1px solid #9da38c;
-  padding-top: 20px;
-  text-shadow: 0 1px 16px #f3f0df;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
 }
 .hero-caption .eyebrow {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 2.2px;
 }
 .hero-caption h2 {
@@ -402,7 +406,10 @@ body[data-screen="welcome"] .topbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #5d6e59;
+  color: var(--ink);
+  background: var(--paper);
+  padding: 8px 12px;
+  border-radius: 20px;
 }
 .scene-label > span:last-child {
   display: none;
@@ -947,11 +954,16 @@ body[data-screen="task"] .scene-tools {
   }
 }
 @media (max-width: 650px) {
+  :root {
+    --muted: #4e5d4c;
+  }
   .topbar {
-    padding: 18px 20px;
+    padding: 16px;
+    gap: 10px;
   }
   .brand {
-    font-size: 8px;
+    font-size: 9px;
+    letter-spacing: 1.2px;
   }
   .brand-mark {
     font-size: 35px;
@@ -960,12 +972,24 @@ body[data-screen="task"] .scene-tools {
     gap: 6px;
   }
   .language-button {
-    padding: 10px;
-    font-size: 11px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .icon-button {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: var(--paper);
   }
   .stop-button {
-    font-size: 10px;
+    font-size: 14px;
     padding: 10px;
+    min-height: 44px;
+    background: var(--paper);
+  }
+  .stop-button span {
+    display: none;
   }
   .footer {
     position: relative;
@@ -974,7 +998,9 @@ body[data-screen="task"] .scene-tools {
     padding: 15px 20px;
     gap: 8px;
     flex-wrap: wrap;
-    font-size: 7px;
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: 0.7px;
   }
   .welcome-panel {
     padding: 112px 26px 36px;
@@ -985,7 +1011,24 @@ body[data-screen="task"] .scene-tools {
     font-size: 61px;
   }
   .welcome-panel .subtitle {
+    font-size: 17px;
+  }
+  .welcome-description {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .eyebrow,
+  .task-panel .eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+  }
+  .button,
+  .accessible-action button {
     font-size: 15px;
+  }
+  .device-note {
+    font-size: 13px;
+    color: var(--muted);
   }
   .welcome-actions,
   .welcome-description,
@@ -994,6 +1037,9 @@ body[data-screen="task"] .scene-tools {
   }
   .welcome-meta {
     margin-top: 19px;
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   .disclaimer {
     margin-top: 22px;
@@ -1013,25 +1059,36 @@ body[data-screen="task"] .scene-tools {
   .welcome-panel {
     padding-top: 32px;
   }
+  body[data-screen="welcome"] #content {
+    display: flex;
+    flex-direction: column;
+  }
   .hero-caption {
-    top: 254px;
-    bottom: auto;
-    left: 25px;
-    right: 25px;
+    /* Keep this caption out of the kitchen image, even with browser color overrides. */
+    position: relative;
+    inset: auto;
+    order: -1;
+    padding: 22px 26px;
+    gap: 16px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
   }
   .hero-caption h2 {
-    font-size: 22px;
+    font-size: 26px;
   }
   .hero-caption .eyebrow {
-    font-size: 7px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
   }
   .caption-index {
-    font-size: 14px;
+    font-size: 16px;
+  }
+  .caption-arrow {
+    display: none;
   }
   .scene-label {
-    top: 90px;
-    right: 20px;
-    font-size: 7px;
+    display: none;
   }
   .welcome-panel h1 br {
     display: none;
@@ -1040,11 +1097,15 @@ body[data-screen="task"] .scene-tools {
     font-size: 48px;
     letter-spacing: -1.7px;
   }
-  .topbar {
-    background: linear-gradient(var(--paper), transparent);
+  body[data-screen="welcome"] .topbar,
+  body:not([data-screen="welcome"]) .topbar {
+    background: var(--paper);
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
   }
   body[data-screen="welcome"] .disclaimer p {
-    font-size: 11px;
+    font-size: 14px;
+    color: var(--muted);
   }
   body:not([data-screen="welcome"]) #content {
     padding: 102px 15px 24px;
@@ -1055,12 +1116,53 @@ body[data-screen="task"] .scene-tools {
     width: 100%;
     max-height: none;
     padding: 25px;
+    background: var(--paper);
+  }
+  .panel-body,
+  .task-panel .panel-body {
+    font-size: 16px;
+  }
+  .panel-detail,
+  .task-panel .panel-detail,
+  .reflection-panel > .panel-detail,
+  .gentle-note,
+  .accessible-action small,
+  .sound-caption,
+  .care-note p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .care-note strong {
+    font-size: 14px;
+  }
+  .text-button {
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .settings-dialog {
+    padding: 24px;
+  }
+  .settings-dialog p,
+  .setting small,
+  .settings-dialog .settings-note {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .setting strong {
+    font-size: 16px;
+  }
+  .dialog-heading .eyebrow {
+    font-size: 11px;
+  }
+  .setting small {
+    line-height: 1.6;
   }
   .experience-panel h1 {
     font-size: 37px;
   }
   .progress {
     width: 100%;
+    background: var(--paper);
     justify-content: space-between;
     gap: 5px;
     margin-bottom: 17px;
@@ -1071,7 +1173,7 @@ body[data-screen="task"] .scene-tools {
     gap: 0;
   }
   .progress .current {
-    font-size: 10px;
+    font-size: 12px;
     gap: 7px;
   }
   .progress b {
@@ -1093,6 +1195,8 @@ body[data-screen="task"] .scene-tools {
   }
   .task-checks {
     flex-direction: row;
+    flex-wrap: wrap;
+    font-size: 14px;
     gap: 18px;
     margin-top: 15px;
   }
@@ -1124,7 +1228,8 @@ body[data-screen="task"] .scene-tools {
     top: 400px;
     bottom: auto;
     left: 50%;
-    font-size: 9px;
+    background: var(--paper);
+    padding: 4px;
     gap: 10px;
   }
   .hover-label {
@@ -1137,13 +1242,22 @@ body[data-screen="task"] .scene-tools {
     right: 15px;
     left: 15px;
     max-width: none;
-    font-size: 10px;
+    font-size: 14px;
   }
   .scene-tools button {
-    font-size: 9px;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .scene-tools > span {
+    display: none;
   }
   .reflection-questions li p {
-    font-size: 13px;
+    font-size: 16px;
+  }
+}
+@media (max-width: 380px) {
+  body:not([data-screen="welcome"]) .brand > span:last-child {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

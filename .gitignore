@@ -4,3 +4,4 @@ coverage/
 .certs/
 *.local
 *.log
+.codex-remote-attachments/
